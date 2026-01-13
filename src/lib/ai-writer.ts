@@ -1,4 +1,4 @@
-import { type Policy } from "./data-service";
+import { type Policy } from "./data-service"; // Verified Fix V2
 
 export interface BlogPost {
     id: string;
@@ -36,14 +36,14 @@ ${policy.summary}
 
 ## 💰 지원 혜택
 이번 정책의 핵심은 **${policy.support || "다양한 혜택"}**을 지원받을 수 있다는 점입니다.
-특히 ${policy.target} 분들이라면 100% 혜택을 누릴 수 있습니다.
+특히 ${policy.target || "대한민국 내 거주하는"} 분들이라면 100% 혜택을 누릴 수 있습니다.
 
 ## 📅 신청 기간 및 방법
 - **신청 기간**: 예산 소진 시까지 (상시 접수)
 - **신청 방법**: 온라인 '보조금24' 또는 관할 주민센터 방문
 
 ## 📝 3줄 요약
-1. ${policy.target} 대상
+1. ${policy.target || "신청 자격 부합"} 대상
 2. ${policy.support || "맞춤형"} 지원 혜택
 3. 빠른 신청 권장
 
