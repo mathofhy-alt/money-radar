@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { fetchLatestPolicies } from "@/lib/data-service";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const baseUrl = "https://money-radar.vercel.app";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://money-radar.vercel.app";
     const policies = await fetchLatestPolicies();
 
     const newsUrls = policies.map((policy) => ({
