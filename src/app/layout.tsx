@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/common/Navbar";
 import MarketTicker from "@/components/common/MarketTicker";
+import GoogleAdSense from "@/components/common/GoogleAdSense"; // Added AdSense
 import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -21,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={cn(inter.className, "min-h-screen bg-background antialiased selection:bg-primary/10 selection:text-primary")}>
+        <GoogleAdSense />
         <MarketTicker />
         <Navbar />
         <main className="flex min-h-[calc(100vh-6rem)] flex-col">
