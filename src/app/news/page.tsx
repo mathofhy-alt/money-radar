@@ -69,11 +69,7 @@ export default async function NewsPage() {
                 {/* Sidebar */}
                 <aside className="w-full lg:w-80 hidden lg:block space-y-6">
                     <PopularPostsWidget />
-                    {/* Sidebar Ad Placeholder */}
-                    <div className="w-full h-64 bg-slate-100 rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-slate-400">
-                        <span className="text-xs font-bold">SPONSORED</span>
-                        <span className="text-xs">사이드바 광고</span>
-                    </div>
+
                 </aside>
             </div>
         </div>

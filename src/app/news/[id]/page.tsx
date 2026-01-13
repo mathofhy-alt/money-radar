@@ -5,7 +5,7 @@ import { generateBlogPost } from "@/lib/ai-writer";
 import { ArrowLeft, Calendar, User, Share2, Printer, ChevronRight } from "lucide-react";
 import { remark } from "remark";
 import html from "remark-html";
-import AdPlaceholder from "@/components/common/AdPlaceholder";
+
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -82,14 +82,14 @@ export default async function NewsDetailPage({ params }: PageProps) {
                     </header>
 
                     <div className="p-8 text-slate-800 leading-relaxed font-normal">
-                        <AdPlaceholder label="구글 애드센스 (상단)" height="h-28" />
+
 
                         <div
                             className="prose prose-slate max-w-none prose-headings:font-bold prose-headings:text-slate-900 prose-p:text-slate-700 prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-strong:text-blue-600 prose-li:marker:text-blue-500"
                             dangerouslySetInnerHTML={{ __html: contentHtml }}
                         />
 
-                        <AdPlaceholder label="구글 애드센스 (하단)" height="h-64" />
+
                     </div>
                 </article>
 
