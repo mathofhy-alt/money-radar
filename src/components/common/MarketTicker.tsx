@@ -17,11 +17,11 @@ const TICKER_ITEMS = [
 
 export default function MarketTicker() {
     return (
-        <div className="w-full bg-slate-900 border-b border-slate-800 overflow-hidden py-2">
+        <div className="w-full bg-slate-900 border-b border-slate-800 overflow-hidden py-2 relative z-50">
             <div className="flex w-max animate-ticker">
                 {/* Double the list to create seamless infinite scroll */}
                 {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-3 px-6 border-r border-slate-800 text-sm whitespace-nowrap">
+                    <Link href="/finance" key={idx} className="flex items-center gap-3 px-6 border-r border-slate-800 text-sm whitespace-nowrap hover:bg-slate-800 transition-colors cursor-pointer block h-full">
                         <span className="font-bold text-slate-400">{item.label}</span>
                         <span className="font-medium text-white">{item.value}</span>
                         <span className={cn(
@@ -34,7 +34,7 @@ export default function MarketTicker() {
                             {item.type === "flat" && <Minus size={12} className="mr-1" />}
                             {item.change}
                         </span>
-                    </div>
+                    </Link>
                 ))}
             </div>
         </div>
