@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -15,23 +16,24 @@ const CATEGORIES = [
 ] as const;
 
 // This will be replaced by Real API later
+// Mapped to data-service MOCK_POLICIES IDs where possible, or generic
 const DEMO_BENEFITS = {
     youth: [
-        { title: "청년도약계좌", amount: "최대 5,000만원", desc: "5년 만기 시 정부기여금 + 비과세 혜택" },
-        { title: "청년월세지원", amount: "월 20만원", desc: "최대 12개월간 월세 현금 지원" },
-        { title: "K-패스(교통비)", amount: "환급형", desc: "대중교통비 최대 53% 환급" },
+        { id: "p-2025-002", title: "청년도약계좌", amount: "최대 5,000만원", desc: "5년 만기 시 정부기여금 + 비과세 혜택" },
+        { id: "p-2025-001", title: "청년월세지원", amount: "월 20만원", desc: "최대 12개월간 월세 현금 지원" },
+        { id: "p-2025-001", title: "K-패스(교통비)", amount: "환급형", desc: "대중교통비 최대 53% 환급" },
     ],
     worker: [
-        { title: "근로장려금", amount: "최대 330만원", desc: "소득/재산 요건 충족 시 현금 지급" },
-        { title: "내일배움카드", amount: "최대 500만원", desc: "직무능력 향상 교육비 지원" },
+        { id: "p-2025-001", title: "근로장려금", amount: "최대 330만원", desc: "소득/재산 요건 충족 시 현금 지급" },
+        { id: "p-2025-004", title: "내일배움카드", amount: "최대 500만원", desc: "직무능력 향상 교육비 지원" },
     ],
     business: [
-        { title: "소상공인 정책자금", amount: "저금리 대출", desc: "연 2%대 금리로 운영자금 대출" },
-        { title: "전기요금 특별지원", amount: "최대 20만원", desc: "영세 소상공인 전기요금 감면" },
+        { id: "p-2025-004", title: "소상공인 정책자금", amount: "저금리 대출", desc: "연 2%대 금리로 운영자금 대출" },
+        { id: "p-2025-004", title: "전기요금 특별지원", amount: "최대 20만원", desc: "영세 소상공인 전기요금 감면" },
     ],
     low_income: [
-        { title: "긴급복지 생계지원", amount: "월 183만원", desc: "위기 상황 발생 시 생계비 지원" },
-        { title: "문화누리카드", amount: "연 13만원", desc: "문화예술/여행/체육 활동비 지원" },
+        { id: "p-2025-003", title: "긴급복지 생계지원", amount: "월 183만원", desc: "위기 상황 발생 시 생계비 지원" },
+        { id: "p-2025-003", title: "문화누리카드", amount: "연 13만원", desc: "문화예술/여행/체육 활동비 지원" },
     ]
 };
 
@@ -85,7 +87,7 @@ export default function BenefitFinder() {
 
                         <div className="grid gap-4">
                             {DEMO_BENEFITS[selected]?.map((benefit, idx) => (
-                                <div key={idx} className="group flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:border-primary/50 hover:bg-slate-50 transition-colors cursor-pointer bg-white">
+                                <Link href={`/news/${benefit.id}`} key={idx} className="group flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:border-primary/50 hover:bg-slate-50 transition-colors cursor-pointer bg-white">
                                     <div>
                                         <div className="flex items-center gap-2 mb-1">
                                             <span className="font-bold text-lg text-gray-800 group-hover:text-primary transition-colors">
@@ -101,7 +103,7 @@ export default function BenefitFinder() {
                                             바로가기 <ChevronRight size={14} />
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             ))}
                         </div>
                     </motion.div>
