@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/common/Navbar";
 import MarketTicker from "@/components/common/MarketTicker";
 import GoogleAdSense from "@/components/common/GoogleAdSense"; // Added AdSense
+import Footer from "@/components/common/Footer"; // Added Footer
 import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -28,6 +29,7 @@ export default function RootLayout({
         <main className="flex min-h-[calc(100vh-6rem)] flex-col">
           {children}
         </main>
+        <Footer />
       </body>
     </html>
   );
