@@ -23,7 +23,7 @@ export function generateBlogPost(policy: Policy): BlogPost {
     return {
         id: policy.id,
         title: policy.title,
-        excerpt: policy.summary,
+        excerpt: policy.summary || policy.title,
         date: new Date().toLocaleDateString("ko-KR"),
         author: "AI 에디터",
         category: policy.category,
