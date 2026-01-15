@@ -13,6 +13,7 @@ export interface Policy {
     summary?: string;
     target?: string;
     support?: string;
+    content?: string;
 }
 
 const MOCK_POLICIES: Policy[] = [
@@ -98,8 +99,7 @@ async function fetchFromRealAPI(): Promise<Policy[]> {
             .replace(/<!\[CDATA\[(.*?)\]\]>/g, "$1") // Extract CDATA content
             .replace(/<[^>]*>/g, " ") // Remove HTML tags
             .replace(/\s+/g, " ") // Collapse whitespace
-            .trim()
-            .substring(0, 150);
+            .trim();
 
         const cleanTitle = title.replace(/<!\[CDATA\[(.*?)\]\]>/g, "$1");
 
@@ -112,7 +112,8 @@ async function fetchFromRealAPI(): Promise<Policy[]> {
             bg_color: "bg-indigo-600",
             createdAt: new Date().toISOString(),
             source: "API",
-            summary: cleanDesc + "..."
+            summary: cleanDesc.substring(0, 150) + "...",
+            content: cleanDesc // Full content for AI
         };
     });
 }

@@ -2,8 +2,24 @@ import BenefitFinder from "@/components/home/BenefitFinder";
 import NewsletterCta from "@/components/home/NewsletterCta";
 import { ArrowRight, TrendingUp, ShieldCheck, Zap } from "lucide-react";
 import Link from "next/link";
+import { supabase } from "@/lib/db";
 
-export default function Home() {
+// Force dynamic rendering to fetch fresh data on every request
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  // Fetch real posts from Supabase
+  let posts: any[] = [];
+  if (supabase) {
+    const { data } = await supabase
+      .from("posts")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(6);
+
+    if (data) posts = data;
+  }
+
   return (
     <div className="flex flex-col items-center">
       {/* Hero Section */}
@@ -14,7 +30,7 @@ export default function Home() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
             </span>
-            오늘 1,240개의 지원금이 업데이트 되었습니다
+            오늘 {posts.length > 0 ? posts.length : "1,240"}개의 지원금이 업데이트 되었습니다
           </div>
 
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 mb-6 leading-tight">
@@ -30,6 +46,44 @@ export default function Home() {
           <BenefitFinder />
         </div>
       </section>
+
+      {/* Latest Posts Section (New!) */}
+      {posts.length > 0 && (
+        <section className="w-full py-16 bg-white border-t border-slate-100">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-slate-900 mb-4">최신 지원금 소식</h2>
+              <p className="text-slate-500">지금 바로 신청 가능한 따끈따끈한 정책들입니다.</p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              {posts.map((post) => (
+                <Link key={post.id} href={`/post/${post.id}`} className="group block bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-xl transition-all hover:-translate-y-1">
+                  <div className={`h-40 ${post.bg_color || "bg-blue-600"} flex items-center justify-center p-6 text-white`}>
+                    <span className="text-5xl opacity-80">💰</span>
+                  </div>
+                  <div className="p-6">
+                    <span className="inline-block px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-semibold mb-3">
+                      {post.category || "청년 지원"}
+                    </span>
+                    <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                      {post.title}
+                    </h3>
+                    <p className="text-slate-500 text-sm line-clamp-2">
+                      {post.summary}
+                    </p>
+                    <div className="mt-4 flex items-center text-sm text-slate-400">
+                      <span>{post.date}</span>
+                      <span className="mx-2">•</span>
+                      <span>조회 {post.views}</span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Features Grid */}
       <section className="w-full py-20 bg-white">
