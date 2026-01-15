@@ -10,6 +10,7 @@ async function verify() {
     const sbKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     const oaKey = process.env.OPENAI_API_KEY;
     const dataKey = process.env.PUBLIC_DATA_API_KEY;
+    const adSenseId = process.env.NEXT_PUBLIC_ADSENSE_ID;
 
     if (!sbUrl || !sbKey) {
         console.error("❌ Supabase 설정이 누락되었습니다.");
@@ -23,7 +24,11 @@ async function verify() {
         console.error("❌ 공공데이터 API 키가 누락되었습니다.");
         return;
     }
-    console.log("✅ 환경 변수 확인 완료");
+    if (!adSenseId) {
+        console.error("❌ 애드센스 ID가 누락되었습니다.");
+        return;
+    }
+    console.log("✅ 환경 변수 확인 완료 (" + adSenseId + ")");
 
     // 2. Supabase Connection Check
     try {

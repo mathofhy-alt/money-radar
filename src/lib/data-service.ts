@@ -16,7 +16,7 @@ export interface Policy {
     content?: string;
 }
 
-const MOCK_POLICIES: Policy[] = [
+export const MOCK_POLICIES: Policy[] = [
     {
         id: "p-2025-001",
         title: "2025년 기후동행카드 신청방법 및 혜택 총정리",

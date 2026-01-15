@@ -39,6 +39,30 @@ const DEMO_BENEFITS = {
 
 export default function BenefitFinder() {
     const [selected, setSelected] = useState<Category | null>(null);
+    const [benefits, setBenefits] = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
+
+    // Fetch benefits when category changes
+    const handleCategoryClick = async (catId: Category) => {
+        if (selected === catId) return; // Prevent double fetch
+        setSelected(catId);
+        setLoading(true);
+
+        try {
+            const res = await fetch(`/api/posts?category=${catId}&limit=3`);
+            if (res.ok) {
+                const data = await res.json();
+                setBenefits(data);
+            } else {
+                setBenefits(DEMO_BENEFITS[catId] || []);
+            }
+        } catch (error) {
+            console.error("Failed to fetch benefits", error);
+            setBenefits(DEMO_BENEFITS[catId] || []);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="w-full max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow-xl border border-gray-100">
@@ -52,7 +76,7 @@ export default function BenefitFinder() {
                 {CATEGORIES.map((cat) => (
                     <button
                         key={cat.id}
-                        onClick={() => setSelected(cat.id)}
+                        onClick={() => handleCategoryClick(cat.id)}
                         className={cn(
                             "flex flex-col items-center p-4 rounded-xl border-2 transition-all duration-200 hover:scale-105",
                             selected === cat.id
@@ -85,27 +109,41 @@ export default function BenefitFinder() {
                             <span className="text-xs font-medium px-2 py-1 bg-gray-100 rounded text-gray-500">실시간 업데이트</span>
                         </div>
 
-                        <div className="grid gap-4">
-                            {DEMO_BENEFITS[selected]?.map((benefit, idx) => (
-                                <Link href={`/news/${benefit.id}`} key={idx} className="group flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:border-primary/50 hover:bg-slate-50 transition-colors cursor-pointer bg-white">
-                                    <div>
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <span className="font-bold text-lg text-gray-800 group-hover:text-primary transition-colors">
-                                                {benefit.title}
-                                            </span>
-                                            <span className="text-xs font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded-full">신청중</span>
+                        {loading ? (
+                            <div className="py-12 text-center text-gray-400">
+                                <div className="animate-spin inline-block w-6 h-6 border-2 border-current border-t-transparent text-blue-600 rounded-full mb-2"></div>
+                                <p>최신 지원금을 조회하고 있습니다...</p>
+                            </div>
+                        ) : (
+                            <div className="grid gap-4">
+                                {benefits.map((benefit, idx) => (
+                                    <Link href={`/post/${benefit.id}`} key={idx} className="group flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:border-primary/50 hover:bg-slate-50 transition-colors cursor-pointer bg-white">
+                                        <div>
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <span className="font-bold text-lg text-gray-800 group-hover:text-primary transition-colors line-clamp-1">
+                                                    {benefit.title}
+                                                </span>
+                                                <span className="text-xs font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded-full whitespace-nowrap">신청중</span>
+                                            </div>
+                                            <p className="text-sm text-gray-500 line-clamp-1">{benefit.desc || benefit.summary || benefit.support}</p>
                                         </div>
-                                        <p className="text-sm text-gray-500">{benefit.desc}</p>
-                                    </div>
-                                    <div className="text-right">
-                                        <div className="text-lg font-bold text-indigo-600">{benefit.amount}</div>
-                                        <div className="flex items-center justify-end text-xs text-gray-400 mt-1 group-hover:text-primary">
-                                            바로가기 <ChevronRight size={14} />
+                                        <div className="text-right min-w-[80px]">
+                                            <div className="text-lg font-bold text-indigo-600">
+                                                {benefit.amount || benefit.support ? (benefit.amount || "지원금") : "자세히보기"}
+                                            </div>
+                                            <div className="flex items-center justify-end text-xs text-gray-400 mt-1 group-hover:text-primary">
+                                                바로가기 <ChevronRight size={14} />
+                                            </div>
                                         </div>
+                                    </Link>
+                                ))}
+                                {benefits.length === 0 && (
+                                    <div className="py-8 text-center text-gray-400 bg-slate-50 rounded-xl">
+                                        아직 등록된 공고가 없습니다.
                                     </div>
-                                </Link>
-                            ))}
-                        </div>
+                                )}
+                            </div>
+                        )}
                     </motion.div>
                 ) : (
                     <div className="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-200">

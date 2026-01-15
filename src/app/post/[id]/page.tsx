@@ -3,26 +3,65 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Calendar, Eye, Share2 } from "lucide-react";
 
+import { MOCK_POLICIES } from "@/lib/data-service";
+
 // Force dynamic rendering
 export const dynamic = "force-dynamic";
 
+import ShareButton from "@/components/common/ShareButton";
+
+// ... existing imports ...
+
 export default async function PostDetail({ params }: { params: { id: string } }) {
-    // Await params if Next.js version requires it (future proofing), or use directly
+    // ... existing post fetching logic ...
     const { id } = await params;
 
-    if (!supabase) {
-        return <div>DB Connection Error</div>;
+    let post = null;
+
+    // 1. Try fetching from DB
+    if (supabase) {
+        const { data } = await supabase
+            .from("posts")
+            .select("*")
+            .eq("id", id)
+            .single();
+        if (data) post = data;
     }
 
-    const { data: post } = await supabase
-        .from("posts")
-        .select("*")
-        .eq("id", id)
-        .single();
+    // 2. Fallback to Mock Data (if DB missing or connection failed)
+    if (!post) {
+        const mock = MOCK_POLICIES.find(p => p.id === id);
+        if (mock) {
+            post = {
+                ...mock,
+                content: mock.content || mock.summary || "내용이 없습니다.", // Fallback content
+                created_at: new Date().toISOString()
+            };
+        }
+    }
 
     if (!post) {
         notFound();
     }
+
+    // --- Related Posts Logic ---
+    let relatedPosts: any[] = [];
+    if (supabase) {
+        const { data } = await supabase
+            .from("posts")
+            .select("id, title, category, date, views")
+            .neq("id", id) // Exclude current post
+            .eq("category", post.category) // Same category
+            .limit(3);
+
+        if (data) relatedPosts = data;
+    }
+
+    // Fallback Related (Mock) if DB empty
+    if (relatedPosts.length === 0) {
+        relatedPosts = MOCK_POLICIES.filter(p => p.id !== id && p.category === post.category).slice(0, 3);
+    }
+    // ---------------------------
 
     return (
         <article className="min-h-screen bg-white">
@@ -58,9 +97,8 @@ export default async function PostDetail({ params }: { params: { id: string } })
                             <ArrowLeft size={20} />
                             목록으로
                         </Link>
-                        <button className="text-slate-500 hover:text-blue-600 transition-colors p-2 rounded-full hover:bg-blue-50">
-                            <Share2 size={20} />
-                        </button>
+                        {/* Dynamic Share Button */}
+                        <ShareButton title={post.title} />
                     </div>
 
                     {/* AI Generated Content */}
@@ -87,6 +125,33 @@ export default async function PostDetail({ params }: { params: { id: string } })
                     </div>
                 </div>
             </div>
+
+            {/* Related Posts Section */}
+            {relatedPosts.length > 0 && (
+                <section className="container mx-auto px-4 max-w-3xl mb-20">
+                    <h3 className="text-2xl font-bold text-slate-900 mb-6">💰 함께 보면 좋은 지원금</h3>
+                    <div className="grid gap-4">
+                        {relatedPosts.map((rp, idx) => (
+                            <Link href={`/post/${rp.id}`} key={idx} className="block group bg-white border border-slate-100 rounded-xl p-6 hover:shadow-lg transition-all hover:-translate-y-1">
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-md mb-2 inline-block">
+                                            {rp.category || "추천"}
+                                        </span>
+                                        <h4 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                                            {rp.title}
+                                        </h4>
+                                        <p className="text-slate-400 text-sm mt-1">{rp.date} • 조회 {rp.views}</p>
+                                    </div>
+                                    <div className="text-slate-300 group-hover:text-blue-600 transition-colors">
+                                        <ArrowRight size={24} />
+                                    </div>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                </section>
+            )}
         </article>
     );
 }
