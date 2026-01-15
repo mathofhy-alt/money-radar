@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/db";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Calendar, Eye, Share2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Calendar, Eye } from "lucide-react";
 
 import { MOCK_POLICIES } from "@/lib/data-service";
 
